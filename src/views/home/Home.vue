@@ -128,7 +128,7 @@
           //拼接上拉加载的数据，只能通过push，不能直接进行数组的赋值，不然会覆盖之前的数据
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page +=1
-          console.log(this.goods);
+          // console.log(this.goods);
         })
       }
 
