@@ -23,7 +23,8 @@
       },
       methods:{
         tabClick(index){
-          this.currentIndex=index
+          this.currentIndex=index;
+          this.$emit('tabCtrl',index)
         }
       }
     }

@@ -12,9 +12,9 @@
 <!--本周流行-->
     <feature/>
 <!--tabCtrl-->
-    <tab-ctrl :titles="['流行','新款','精选']" class="tabCtrl"/>
+    <tab-ctrl :titles="['流行','新款','精选']" class="tabCtrl" @tabCtrl="tabCtrl"/>
 <!--商品展示-->
-    <good-list :goods="goods.pop.list"></good-list>
+    <good-list :goods="showGoods"></good-list>
 
     <ul>
       <li>222</li>
@@ -92,10 +92,28 @@
           'pop':{page:0,list:[]},
           'new':{page:0,list:[]},
           'sell':{page:0,list:[]},
-        }
+        },
+        currentType:'pop',
       }
     },
     methods:{
+      // 监听事件
+      tabCtrl(index){
+        switch (index) {
+          case 0:
+            this.currentType='pop'
+            break;
+          case 1:
+            this.currentType='new'
+            break;
+          case 2:
+            this.currentType='sell'
+            break;
+        }
+      },
+
+
+      //网络请求相关的方法
       getHomeMultidata(){
         getHomeMultidata().then(res=>{
           // console.log(res);
@@ -110,11 +128,17 @@
           //拼接上拉加载的数据，只能通过push，不能直接进行数组的赋值，不然会覆盖之前的数据
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page +=1
-          // console.log(this.goods);
+          console.log(this.goods);
         })
       }
 
 
+    },
+    computed:{
+      //注意这个计算属性的方法中要使用this，而且要关注一下计算属性如何进行引用，是变量还是属性值，计算属性是一个属性，引用的时候要把方法当成属性，所以不需要{}包裹进行引用，
+      showGoods(){
+        return this.goods[this.currentType].list
+      }
     },
     created() {
       //1.请求多个数据  请求是异步的，如果直接输出的话估计会没有值，不知道什么时候能请求到数据

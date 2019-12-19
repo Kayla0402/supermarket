@@ -1,16 +1,12 @@
 <template>
   <div class="goodList">
-    <div v-for="item in goods" class="goodListItem" :class="{'mR10':index%2 != 0}">
-      <a :href="item.link" >
-        <img :src="item.show.img" alt="">
-        <span>{{item.title}}</span>
-      </a>
-    </div>
+<!--注意此时的动态属性绑定要使用驼峰命名法，绑定动态的属性要用-进行链接，而接收的时候要大写字母-->
+    <good-list-item v-for="(item,index) in goods" :goods-item='item'  :key="index"/>
   </div>
 </template>
 
 <script>
-  // import GoodListItem from './GoodListItem'
+  import GoodListItem from './GoodListItem'
     export default {
       name: "GoodsList",
       props:{
@@ -22,41 +18,16 @@
           }
       },
       components:{
-        // GoodListItem
+        GoodListItem
       },
-
     }
 </script>
 
 <style scoped>
-.goodList{
-  display: flex;
-  flex-wrap: wrap;
-  padding: 10px;
-}
-  .goodListItem{
-    flex: 1;
+  .goodList{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
   }
-.goodListItem a{
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  align-items: center;
-}
-.mR10{
-  margin-right: 10px;
-}
-  .goodListItem img{
-    width: 150px;
 
-  }
-.goodListItem span{
-  display: -webkit-box;/*作为弹性伸缩盒子模型显示*/
-  -webkit-line-clamp: 1; /*显示的行数；如果要设置2行加...则设置为2*/
-  overflow: hidden; /*超出的文本隐藏*/
-  text-overflow: ellipsis; /* 溢出用省略号*/
-  -webkit-box-orient: vertical;/*伸缩盒子的子元素排列：从上到下*/
-  font-size: 12px;
-  padding: 10px;
-}
 </style>
