@@ -5,54 +5,57 @@
     <nav-bar class="nav_home">
       <div slot="center">购物街</div>
     </nav-bar>
-<!--轮播图-->
-    <banner :banner="banners" ></banner>
-<!-- 推荐 -->
-    <recommend :recommends="recommends"/>
-<!--本周流行-->
-    <feature/>
-<!--tabCtrl-->
-    <tab-ctrl :titles="['流行','新款','精选']" class="tabCtrl" @tabCtrl="tabCtrl"/>
-<!--商品展示-->
-    <good-list :goods="showGoods"></good-list>
-
-    <ul>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222d</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222d</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222d</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222d</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222</li>
-      <li>222d</li>
-    </ul>
+<!-- 区域滚动-->
+    <scroll class="content" ref="scroll">
+      <!--轮播图-->
+<!--      <banner :banner="banners" ></banner>-->
+      <!-- 推荐 -->
+<!--      <recommend :recommends="recommends"/>-->
+      <!--本周流行-->
+      <feature/>
+      <!--tabCtrl-->
+      <tab-ctrl :titles="['流行','新款','精选']" class="tabCtrl" @tabCtrl="tabCtrl"/>
+      <!--商品展示-->
+<!--      <good-list :goods="showGoods"></good-list>-->
+      <ul class="content1">
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222d</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222d</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222d</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222d</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222</li>
+        <li>222defg</li>
+      </ul>
+    </scroll>
+    <back-top @click.native="backTopClick"/>
 
   </div>
 </template>
@@ -63,9 +66,10 @@
 
   import NavBar from '@/components/common/navBar/NavBar'
   import Banner from '@/components/common/banner/Banner'
+  import Scroll from '@/components/common/scroll/Scroll'
   import TabCtrl from '@/components/content/tabCtrl/TabCtrl'
   import GoodList from '@/components/content/goods/GoodList'
-
+  import BackTop from '@/components/content/backTop/BackTop'
   import Gray10 from '@/components/content/Gray10'
 
   import {getHomeMultidata ,getHomeGoods } from "@/network/home";
@@ -78,9 +82,10 @@
 
       NavBar,
       Banner,
+      Scroll,
       TabCtrl,
       GoodList,
-
+      BackTop,
       Gray10,
 
     },
@@ -111,7 +116,15 @@
             break;
         }
       },
-
+      //返回到顶部
+      backTopClick(){
+        // console.log('backTopClick');
+        /*
+        可以通过BScroll的一个scrollTo可以让他返回到最顶部，scrollTo(x,y,time)
+        1.首先要获取到scroll组件，可以通过scroll.scroll获取scroll组件上的data数据中的scroll区域滚动对象，
+        */
+        this.$refs.scroll.scroll.scrollTo(0,0,500)
+      },
 
       //网络请求相关的方法
       getHomeMultidata(){
@@ -156,8 +169,8 @@
 
 <style scoped>
   #home{
-    padding-top: 44px;
-    margin-bottom: 50px;
+    margin-top: 44px;
+    height: 100vh;
   }
   .nav_home {
     background-color: #ff8198;
@@ -166,5 +179,10 @@
   .tabCtrl{
     position: sticky;
     top:44px;
+  }
+  .content{
+    height: calc(100% - 49px);
+    overflow: hidden;
+    background-color: antiquewhite;
   }
 </style>
