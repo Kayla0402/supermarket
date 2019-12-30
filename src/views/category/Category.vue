@@ -43,7 +43,6 @@
 <script>
   import BScroll from 'better-scroll';
     export default {
-      el: "",
       data(){
         return{
           scroll:null

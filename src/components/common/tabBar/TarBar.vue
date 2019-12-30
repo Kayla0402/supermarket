@@ -7,7 +7,7 @@
 <script>
   import tabBarItem from './TabBarItem'
     export default {
-        name: "TarBar",
+      name: "TarBar",
       components:{
         tabBarItem
       }

@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const url = "http://106.54.54.237:8000/api/v1" || "http://123.207.32.32:8000/api/v2";
+// const url = "http://106.54.54.237:8000/api/v1" || "http://123.207.32.32:8000/api/w1"||"http://123.207.32.32:8000";
+const url = "http://123.207.32.32:8000/api/w1" ;
 export function request(config) {
   // 1、创建axios实例
   const instance = axios.create({

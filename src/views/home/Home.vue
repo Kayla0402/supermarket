@@ -6,56 +6,22 @@
       <div slot="center">购物街</div>
     </nav-bar>
 <!-- 区域滚动-->
-    <scroll class="content" ref="scroll">
+    <!--组件传值如果要特定传入的数据类型，则属性前需要添加:声明一下，而且传值要用驼峰命名法，大写字母用-加小写字母更改-->
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
       <!--轮播图-->
-<!--      <banner :banner="banners" ></banner>-->
+      <banner :banner="banners" ></banner>
       <!-- 推荐 -->
-<!--      <recommend :recommends="recommends"/>-->
+      <recommend :recommends="recommends"/>
       <!--本周流行-->
       <feature/>
       <!--tabCtrl-->
       <tab-ctrl :titles="['流行','新款','精选']" class="tabCtrl" @tabCtrl="tabCtrl"/>
       <!--商品展示-->
-<!--      <good-list :goods="showGoods"></good-list>-->
-      <ul class="content1">
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222d</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222d</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222d</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222d</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222</li>
-        <li>222defg</li>
-      </ul>
+      <good-list :goods="showGoods"></good-list>
+
+
     </scroll>
-    <back-top @click.native="backTopClick"/>
+    <back-top @click.native="backTopClick" v-show="isShowBackTop"/>
 
   </div>
 </template>
@@ -99,6 +65,7 @@
           'sell':{page:0,list:[]},
         },
         currentType:'pop',
+        isShowBackTop:false,
       }
     },
     methods:{
@@ -122,14 +89,22 @@
         /*
         可以通过BScroll的一个scrollTo可以让他返回到最顶部，scrollTo(x,y,time)
         1.首先要获取到scroll组件，可以通过scroll.scroll获取scroll组件上的data数据中的scroll区域滚动对象，
+        拿到scroll组件就可以拿到scroll组件中的所有数据和方法 this.$refs.scroll.scroll.scrollTo(0,0,500)
+        这样操作有点懵逼，不太好理解，可以将scroll.scrollTo封装到Scroll.vue方法中，直接获取scroll组件调用方法即可
         */
-        this.$refs.scroll.scroll.scrollTo(0,0,500)
+        // this.$refs.scroll.scroll.scrollTo(0,0,500)
+        this.$refs.scroll.scrollTo(0,0)
+      },
+      //接收scroll组件滚动的position参数
+      contentScroll(position){
+        // console.log(position);
+        this.isShowBackTop=-(position.y)>300?true:false;
       },
 
       //网络请求相关的方法
       getHomeMultidata(){
         getHomeMultidata().then(res=>{
-          // console.log(res);
+          console.log(res);
           this.banners=res.data.banner.list
           this.recommends=res.data.recommend.list
         })
@@ -141,7 +116,7 @@
           //拼接上拉加载的数据，只能通过push，不能直接进行数组的赋值，不然会覆盖之前的数据
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page +=1
-          // console.log(this.goods);
+          console.log(this.goods);
         })
       }
 
@@ -160,7 +135,11 @@
      this.getHomeGoods('pop')
      this.getHomeGoods('new')
      this.getHomeGoods('sell')
-
+      //接收孙组件GoodListItem图片加载结束的事件
+      this.$bus.$on('itemImageLoad',()=>{
+        //刷新scroll组件，重新计算scrollHeight的高度
+        // this.$refs.scroll.
+      })
 
 
     }
@@ -183,6 +162,6 @@
   .content{
     height: calc(100% - 49px);
     overflow: hidden;
-    background-color: antiquewhite;
+    /*background-color: antiquewhite;*/
   }
 </style>

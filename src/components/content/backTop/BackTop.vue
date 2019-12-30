@@ -6,13 +6,7 @@
 
 <script>
     export default {
-        el: "",
-      data(){
 
-      },
-      methods:{
-
-      }
     }
 </script>
 

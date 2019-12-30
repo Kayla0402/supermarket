@@ -11,7 +11,6 @@
 
 <script>
     export default {
-      el: "",
       props:{
           recommends:{
             type:Array,

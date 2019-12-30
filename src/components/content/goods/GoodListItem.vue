@@ -1,7 +1,7 @@
 <template>
   <div class="goodListItem">
     <a :href="goodsItem.link">
-      <img :src="goodsItem.show.img" alt="">
+      <img :src="goodsItem.show.img" alt="" @load="imageLoad">
       <p>{{goodsItem.title}}</p>
       <div class="goodDetail">
         <span>¥{{goodsItem.price}}</span><span>{{goodsItem.cfav}}</span>
@@ -21,6 +21,18 @@
             }
           }
       },
+      methods:{
+        /*
+        * 原生的js中监测图片加载完成   img.onLoad=function(){...},
+        * 而Vue中已经封装好了@load=事件，
+        * 要将@load发射给Home.vue组件（爷爷组件），不太好传，利用$but.$emit
+        * */
+        imageLoad(){
+          console.log("imageLoad");
+          //将图片加载好的事件发射给Home组件,Home组件的created事件中接收$bus.$emit('itemImageLoad')
+          this.$bus.$emit('itemImageLoad')
+        }
+      }
 
     }
 </script>
