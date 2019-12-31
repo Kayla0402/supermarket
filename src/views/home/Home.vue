@@ -7,7 +7,7 @@
     </nav-bar>
 <!-- 区域滚动-->
     <!--组件传值如果要特定传入的数据类型，则属性前需要添加:声明一下，而且传值要用驼峰命名法，大写字母用-加小写字母更改-->
-    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="moreGoods">
       <!--轮播图-->
       <banner :banner="banners" ></banner>
       <!-- 推荐 -->
@@ -104,7 +104,7 @@
       //网络请求相关的方法
       getHomeMultidata(){
         getHomeMultidata().then(res=>{
-          console.log(res);
+          // console.log(res);
           this.banners=res.data.banner.list
           this.recommends=res.data.recommend.list
         })
@@ -116,32 +116,62 @@
           //拼接上拉加载的数据，只能通过push，不能直接进行数组的赋值，不然会覆盖之前的数据
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page +=1
-          console.log(this.goods);
+          // console.log(this.goods);
         })
-      }
+      },
 
+      /*
+      加载更多商品(此时只能加载一次，如果需要进行下次加载的话应该要释放这次的加载更多事件
+      this.scroll.finishPullUp()
+      * */
+      moreGoods(){
+        // console.log("更多商品");
+        this.getHomeGoods(this.currentType);
+        this.$refs.scroll.scroll.finishPullUp()
+      },
+
+      /*
+      * 防抖动函数debounce函数，使用在refresh上（图片加载一个就重新计算一下scroll可滑动高度）
+      * */
+      debounce(func,delay){
+        let timer=null;
+        return function (...args) {
+          if(timer) clearTimeout(timer)
+          timer=setTimeout(()=>{
+            func.apply(this,args)
+          },delay)
+        }
+      }
 
     },
     computed:{
       //注意这个计算属性的方法中要使用this，而且要关注一下计算属性如何进行引用，是变量还是属性值，计算属性是一个属性，引用的时候要把方法当成属性，所以不需要{}包裹进行引用，
       showGoods(){
         return this.goods[this.currentType].list
-      }
+      },
+
     },
     created() {
+      //不能再created中获取dom元素或者$refs,可能会获取不到，
+
+
       //1.请求多个数据  请求是异步的，如果直接输出的话估计会没有值，不知道什么时候能请求到数据
       this.getHomeMultidata()
-
-     this.getHomeGoods('pop')
-     this.getHomeGoods('new')
-     this.getHomeGoods('sell')
-      //接收孙组件GoodListItem图片加载结束的事件
+      this.getHomeGoods('pop')
+      this.getHomeGoods('new')
+      this.getHomeGoods('sell')
+    },
+    mounted() {
+      //接收孙组件GoodListItem图片加载结束的事件,不能再created中获取dom元素或者$refs,可能会获取不到，
+      /*
+      * 此时refresh函数会执行30次，为了减轻服务器的压力和优化性能，可以使用防抖动函数debounce
+      *
+      * */
       this.$bus.$on('itemImageLoad',()=>{
         //刷新scroll组件，重新计算scrollHeight的高度
-        // this.$refs.scroll.
+        //   this.$refs.scroll.scroll.refresh()
+        this.debounce( this.$refs.scroll.scroll.refresh)
       })
-
-
     }
   }
 </script>

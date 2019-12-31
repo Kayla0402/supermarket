@@ -28,7 +28,7 @@
         * 要将@load发射给Home.vue组件（爷爷组件），不太好传，利用$but.$emit
         * */
         imageLoad(){
-          console.log("imageLoad");
+          // console.log("imageLoad");
           //将图片加载好的事件发射给Home组件,Home组件的created事件中接收$bus.$emit('itemImageLoad')
           this.$bus.$emit('itemImageLoad')
         }
