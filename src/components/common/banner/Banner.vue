@@ -4,7 +4,7 @@
     <div class="swiper-slide" v-for="item in banner" v-if="banner!=''">
       <a :href="item.link">
         <div class="swiper-img flex3">
-          <img :src="item.image" width="100%"   alt="banner" style="display:block;">
+          <img :src="item.image" width="100%"   alt="banner" style="display:block;" @load="imageLoad">
         </div>
       </a>
     </div>
@@ -79,7 +79,8 @@
               return html
             }
           }
-        }
+        },
+        isLoad:false
       }
     },
     props:{
@@ -90,7 +91,19 @@
         }
       }
     },
+    methods:{
+      /*监听轮播图的加载完成事件，为了获取到tabCtrl组件的准确offsetTop,但是这个值只需要获取一次就够了，所以要记录状态data（）{}中
+        因为只是获取到高度的，所以当一张图片加载好之后获取到高度就行了，没有必要每个轮播图加载好了都要进行一次高度的获取
+      * */
 
+      imageLoad(){
+        if(!this.isLoad){
+          // console.log(444);
+          this.$emit('swiperLoad')
+        }
+        this.isLoad=true;
+      }
+    },
     // 如果你需要得到当前的swiper对象来做一些事情，你可以像下面这样定义一个方法属性来获取当前的swiper对象，同时notNextTick必须为true
     computed: {
       swiper() {

@@ -5,24 +5,26 @@
     <nav-bar class="nav_home">
       <div slot="center">购物街</div>
     </nav-bar>
-<!-- 区域滚动-->
+    <tab-ctrl :titles="['流行','新款','精选']" @tabCtrl="tabCtrl" ref="tabCtrl1" class="tabCtrlTop" v-show="isTabFixed"/>
+
+    <!-- 区域滚动-->
     <!--组件传值如果要特定传入的数据类型，则属性前需要添加:声明一下，而且传值要用驼峰命名法，大写字母用-加小写字母更改-->
     <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="moreGoods">
       <!--轮播图-->
-      <banner :banner="banners" ></banner>
+      <banner :banner="banners" @swiperLoad="swiperLoad"></banner>
       <!-- 推荐 -->
       <recommend :recommends="recommends"/>
       <!--本周流行-->
       <feature/>
       <!--tabCtrl-->
-      <tab-ctrl :titles="['流行','新款','精选']" class="tabCtrl" @tabCtrl="tabCtrl"/>
+      <tab-ctrl :titles="['流行','新款','精选']" @tabCtrl="tabCtrl" ref="tabCtrl2"/>
       <!--商品展示-->
+
       <good-list :goods="showGoods"></good-list>
 
 
     </scroll>
     <back-top @click.native="backTopClick" v-show="isShowBackTop"/>
-
   </div>
 </template>
 
@@ -37,6 +39,8 @@
   import GoodList from '@/components/content/goods/GoodList'
   import BackTop from '@/components/content/backTop/BackTop'
   import Gray10 from '@/components/content/Gray10'
+
+  import { debounce } from '@/common/utils'
 
   import {getHomeMultidata ,getHomeGoods } from "@/network/home";
 
@@ -66,6 +70,8 @@
         },
         currentType:'pop',
         isShowBackTop:false,
+        tabCtrlOffsetTop:0,
+        isTabFixed:false
       }
     },
     methods:{
@@ -82,6 +88,8 @@
             this.currentType='sell'
             break;
         }
+        this.$refs.tabCtrl1.currentIndex=index;
+        this.$refs.tabCtrl2.currentIndex=index;
       },
       //返回到顶部
       backTopClick(){
@@ -97,8 +105,10 @@
       },
       //接收scroll组件滚动的position参数
       contentScroll(position){
-        // console.log(position);
+        // console.log(position);backtop
         this.isShowBackTop=-(position.y)>300?true:false;
+        //觉得tabCtrl是否吸顶（position:fixed)
+        this.isTabFixed=-(position.y)>this.tabCtrlOffsetTop?true:false;
       },
 
       //网络请求相关的方法
@@ -117,6 +127,8 @@
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page +=1
           // console.log(this.goods);
+          //完成上拉加载更多，可以继续进行下次数据的加载而这个取消加载的事件也可以写在数据请求的方法中
+          // this.$refs.scroll.finishPullUp()
         })
       },
 
@@ -127,20 +139,28 @@
       moreGoods(){
         // console.log("更多商品");
         this.getHomeGoods(this.currentType);
-        this.$refs.scroll.scroll.finishPullUp()
+        //而这个取消加载的事件也可以写在数据请求的方法中
+        this.$refs.scroll.finishPullUp()
       },
 
-      /*
-      * 防抖动函数debounce函数，使用在refresh上（图片加载一个就重新计算一下scroll可滑动高度）
-      * */
-      debounce(func,delay){
-        let timer=null;
-        return function (...args) {
-          if(timer) clearTimeout(timer)
-          timer=setTimeout(()=>{
-            func.apply(this,args)
-          },delay)
-        }
+      // /* 将防抖动的函数抽离出去，为功能性的函数，在utils.js中
+      // * 防抖动函数debounce函数，使用在refresh上（图片加载一个就重新计算一下scroll可滑动高度）
+      // * */
+      // debounce(func,delay){
+      //   let timer=null;
+      //   return function (...args) {
+      //     if(timer) clearTimeout(timer)
+      //     timer=setTimeout(()=>{
+      //       func.apply(this,args)
+      //     },delay)
+      //   }
+      // }
+
+      //吸顶效果，主要是一些大图片加载比较慢，直接用
+      swiperLoad(){
+        // console.log(444);
+        // console.log(this.$refs.tabCtrl.$el.offsetTop);
+        this.tabCtrlOffsetTop=this.$refs.tabCtrl2.$el.offsetTop;
       }
 
     },
@@ -165,12 +185,14 @@
       //接收孙组件GoodListItem图片加载结束的事件,不能再created中获取dom元素或者$refs,可能会获取不到，
       /*
       * 此时refresh函数会执行30次，为了减轻服务器的压力和优化性能，可以使用防抖动函数debounce
-      *
+      * 如果refresh函数输出111，不加防抖动则会输出30次，加了防抖动的话输出的次数会小于30次
       * */
+      const refresh=debounce( this.$refs.scroll.refresh,200);
+
       this.$bus.$on('itemImageLoad',()=>{
         //刷新scroll组件，重新计算scrollHeight的高度
-        //   this.$refs.scroll.scroll.refresh()
-        this.debounce( this.$refs.scroll.scroll.refresh)
+        // this.$refs.scroll.refresh()
+       refresh()
       })
     }
   }
@@ -185,10 +207,22 @@
     background-color: #ff8198;
     color: #fff;
   }
-  .tabCtrl{
-    position: sticky;
-    top:44px;
+  .tabCtrlTop{
+    position: relative;
+    z-index: 111;
+    top:0;
   }
+  /*.tabCtrl{*/
+  /*  !*position: sticky;*!*/
+  /*  !*top:44px;*!*/
+  /*}*/
+  /*.fixed{*/
+  /*  position: fixed;*/
+  /*  top: 44px;*/
+  /*  left: 0;*/
+  /*  right: 0;*/
+  /*  z-index: 88888;*/
+  /*}*/
   .content{
     height: calc(100% - 49px);
     overflow: hidden;

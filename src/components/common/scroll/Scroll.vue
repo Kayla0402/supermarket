@@ -48,18 +48,21 @@
         * 此时只能加载一次，如果需要进行下次加载的话应该要释放这次的加载更多事件
         * this.scroll.finishPullUp()
         * */
-        this.scroll.on('pullingUp',()=>{
-          // console.log('加载更多');
-          this.$emit('pullingUp')
-        })
+        if(this.pullUpLoad){
+          //严谨的写法，如果设置了滚动到底部的话
+          this.scroll.on('pullingUp',()=>{
+            // console.log('加载更多');
+            this.$emit('pullingUp')
+          })
+        }
+
       },
       methods:{
         scrollTo(x,y,time=500){
           this.scroll.scrollTo(x,y,time)
         },
         refresh(){
-          console.log(111);
-
+          // console.log(222);
           this.scroll&&this.scroll.refresh()
         },
         //释放加载更多好进行下次的加载
