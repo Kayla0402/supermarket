@@ -194,13 +194,15 @@
         // this.$refs.scroll.refresh()
        refresh()
       })
+    },
+    destroyed() {
+      console.log("home destory");
     }
   }
 </script>
 
 <style scoped>
   #home{
-    margin-top: 44px;
     height: 100vh;
   }
   .nav_home {
