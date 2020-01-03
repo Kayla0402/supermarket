@@ -1,7 +1,8 @@
 <template>
-  <div class="goodListItem">
-    <a :href="goodsItem.link">
-      <img :src="goodsItem.show.img" alt="" @load="imageLoad">
+  <div class="goodListItem" @click="itemClick">
+<!--    <a :href="goodsItem.link">-->
+    <a>
+    <img :src="goodsItem.show.img" alt="" @load="imageLoad">
       <p>{{goodsItem.title}}</p>
       <div class="goodDetail">
         <span>¥{{goodsItem.price}}</span><span>{{goodsItem.cfav}}</span>
@@ -32,6 +33,20 @@
           // console.log("imageLoad");
           //将图片加载好的事件发射给Home组件,Home组件的created事件中接收$bus.$emit('itemImageLoad')
           this.$bus.$emit('itemImageLoad')
+        },
+        //产品点击事件，跳转至详情页面，且携带参数iid
+        itemClick(){
+          // console.log("itemClick");
+          // console.log(this.goodsItem.iid);
+          //动态路由的写法，直接拼接上iid参数
+          this.$router.push('/detail/'+this.goodsItem.iid)
+          // 查询传参的写法
+          // this.$router.push({
+          //   path:'/detail',
+          //   query:{
+          //     iid:this.goodsItem.iid
+          //   }
+          // })
         }
       }
 
