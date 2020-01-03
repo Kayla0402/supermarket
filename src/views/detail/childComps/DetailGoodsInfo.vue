@@ -23,7 +23,8 @@
     },
     methods:{
       goodsInfoLoad(){
-        console.log("goodsInfoLoad");
+        // console.log("goodsInfoLoad");
+        this.$emit('goodsInfoLoad')
       }
     }
 	}

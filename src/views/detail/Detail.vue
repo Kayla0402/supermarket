@@ -1,7 +1,7 @@
 <template>
   <div id="detail">
     <detail-nav-bar/>
-    <scroll class="content">
+    <scroll class="content" ref="scrollDetail">
   <!--轮播图-->
     <detail-swiper :topImages="topImages"/>
 <!--   商品 详情展示-->
@@ -9,7 +9,7 @@
 <!--    店铺详情-->
     <detail-shop-info :shop="shop"></detail-shop-info>
 <!--      展示效果-->
-      <detail-goods-info :detailInfo="detailInfo"></detail-goods-info>
+      <detail-goods-info :detailInfo="detailInfo" @goodsInfoLoad="goodsDetailInfoLoad"></detail-goods-info>
     </scroll>
   </div>
 </template>
@@ -18,6 +18,8 @@
   import DetailNavBar from './childComps/DetailNavBar'
   import {getDetail,GoodsInfo,Shop} from "../../network/detail";
   import Scroll from '@/components/common/scroll/Scroll';
+  import { debounce } from '@/common/utils'
+
 
   import DetailSwiper from './childComps/DetailSwiper'
   import DetailBaseInfo from './childComps/DetailBaseInfo'
@@ -61,6 +63,12 @@
       },
       methods:{
 
+        goodsDetailInfoLoad() {
+          // const refresh=debounce( this.$refs.scroll.refresh,200)
+          console.log('goodsDetailInfoLoad');
+          this.$refs.scrollDetail.refresh()
+          // refresh()
+        }
 
       },
 
