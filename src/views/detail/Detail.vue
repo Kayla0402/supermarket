@@ -10,13 +10,15 @@
     <detail-shop-info :shop="shop"></detail-shop-info>
 <!--      展示效果-->
       <detail-goods-info :detailInfo="detailInfo" @goodsInfoLoad="goodsDetailInfoLoad"></detail-goods-info>
+<!--      尺码展示-->
+      <detail-param-info :paramInfo="paramInfo"></detail-param-info>
     </scroll>
   </div>
 </template>
 
 <script>
   import DetailNavBar from './childComps/DetailNavBar'
-  import {getDetail,GoodsInfo,Shop} from "../../network/detail";
+  import {getDetail,GoodsInfo,Shop,GoodsParam} from "../../network/detail";
   import Scroll from '@/components/common/scroll/Scroll';
   import { debounce } from '@/common/utils'
 
@@ -25,6 +27,7 @@
   import DetailBaseInfo from './childComps/DetailBaseInfo'
   import DetailShopInfo from './childComps/DetailShopInfo'
   import DetailGoodsInfo from './childComps/DetailGoodsInfo'
+  import DetailParamInfo from './childComps/DetailParamInfo'
 
   export default {
     name:'Detail',
@@ -34,6 +37,7 @@
         DetailBaseInfo,
         DetailShopInfo,
         DetailGoodsInfo,
+        DetailParamInfo,
         Scroll
       },
       data(){
@@ -42,7 +46,8 @@
           topImages:[],
           goods:{},
           shop:{},
-          detailInfo:{}
+          detailInfo:{},
+          paramInfo:{},
         }
       },
       created() {
@@ -59,6 +64,8 @@
           this.shop=new Shop(data.shopInfo)
           //展示效果
           this.detailInfo = data.detailInfo
+          //尺码展示
+          this.paramInfo=new GoodsParam(data.itemParams.info, data.itemParams.rule);
         })
       },
       methods:{
