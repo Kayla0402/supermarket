@@ -55,7 +55,7 @@
         // console.log(this.$route.params.iid);
         //获取url的查询参数？？？？？？？？？
         getDetail(this.iid).then(res=>{
-          // console.log(res);
+          console.log(res);
           const data=res.result
           this.topImages=data.itemInfo.topImages;
           //产品信息
@@ -72,7 +72,7 @@
 
         goodsDetailInfoLoad() {
           // const refresh=debounce( this.$refs.scroll.refresh,200)
-          console.log('goodsDetailInfoLoad');
+          // console.log('goodsDetailInfoLoad');
           this.$refs.scrollDetail.refresh()
           // refresh()
         }
