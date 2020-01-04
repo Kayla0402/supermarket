@@ -9,6 +9,13 @@ export function getDetail(iid) {
     })
 }
 
+//产生详情中的推荐信息，新的接口
+export function getRecommend() {
+  return request({
+    url:"/recommend",
+  })
+}
+
 //整合商品详情轮播图下的数据，导出一个类
 export class GoodsInfo {
   constructor(itemInfo,columns,services){
