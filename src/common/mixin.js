@@ -25,3 +25,22 @@ export const testMixin = {
     // console.log('混入测试');
   }
 }
+//返回顶部
+import BackTop from '@/components/content/backTop/BackTop'
+export const backTopMixin={
+  data(){
+    return {
+      isShowBackTop:false,
+
+    }
+  },
+  components: {
+    BackTop
+  },
+  methods:{
+    //返回到顶部
+    backTopClick(){
+      this.$refs.scroll.scrollTo(0,0)
+    },
+  }
+}

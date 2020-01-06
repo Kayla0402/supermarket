@@ -1,7 +1,7 @@
 <template>
   <div id="detail">
-    <detail-nav-bar @titleClick="titleClick"/>
-    <scroll class="content" ref="scrollDetail">
+    <detail-nav-bar @titleClick="titleClick" ref="nav"/>
+    <scroll class="content" ref="scroll" @scroll="contentScroll" :probeType="3">
       <!--轮播图-->
       <detail-swiper :topImages="topImages"/>
       <!--   商品 详情展示-->
@@ -18,6 +18,11 @@
       <good-list :goods="recommends" ref="recommend"></good-list>
 
     </scroll>
+<!--    底部加入购物车-->
+    <detail-bottom-bar></detail-bottom-bar>
+<!--    回到顶部-->
+    <back-top @click.native="backTopClick" v-show="isShowBackTop"/>
+
   </div>
 </template>
 
@@ -28,7 +33,7 @@
   import GoodList from '@/components/content/goods/GoodList'
   import { debounce } from '@/common/utils'
   //混入
-  import {testMixin} from '@/common/mixin'
+  import {testMixin ,backTopMixin} from '@/common/mixin'
 
   import DetailSwiper from './childComps/DetailSwiper'
   import DetailBaseInfo from './childComps/DetailBaseInfo'
@@ -36,6 +41,7 @@
   import DetailGoodsInfo from './childComps/DetailGoodsInfo'
   import DetailParamInfo from './childComps/DetailParamInfo'
   import DetailCommentInfo from './childComps/DetailCommentInfo'
+  import DetailBottomBar from './childComps/DetailBottomBar'
 
   export default {
     name: 'Detail',
@@ -48,6 +54,7 @@
       DetailParamInfo,
       DetailCommentInfo,
       GoodList,
+      DetailBottomBar,
       Scroll
     },
     data() {
@@ -63,7 +70,7 @@
         // recommendsOffset:null,
         themeTopYs:[],
         getThemeTopY:null,
-
+        currentIndex:null,
       }
     },
     /*
@@ -128,7 +135,7 @@
       goodsDetailInfoLoad() {
         // const refresh=debounce( this.$refs.scroll.refresh,200)
         // console.log('goodsDetailInfoLoad');
-        this.$refs.scrollDetail.refresh()
+        this.$refs.scroll.refresh()
         // refresh()
         //5.此时图片加载完成了，获取this.$refs.comment.$el.offsetTop,调用太频繁了，利用debounce函数
         // console.log(this.$refs.comment.$el.offsetTop);
@@ -145,36 +152,56 @@
       titleClick(index){
 
         // if(index==1){
-        //   this.$refs.scrollDetail.scrollTo(0,-300,500)
+        //   this.$refs.scroll.scrollTo(0,-300,500)
         // }
         //不要这么判断index是多少进而给每次一个滚动事件
         // switch (index) {
         //   case 0:
-        //     this.$refs.scrollDetail.scrollTo(0,0,500)
+        //     this.$refs.scroll.scrollTo(0,0,500)
         //     break;
         //   case 1:
-        //     this.$refs.scrollDetail.scrollTo(0,-300,500)
+        //     this.$refs.scroll.scrollTo(0,-300,500)
         //     break;
         //   case 2:
-        //     this.$refs.scrollDetail.scrollTo(0,-700,500)
+        //     this.$refs.scroll.scrollTo(0,-700,500)
         //     break;
         //   case 3:
-        //     this.$refs.scrollDetail.scrollTo(0,-this.recommendsOffset,500)
+        //     this.$refs.scroll.scrollTo(0,-this.recommendsOffset,500)
         //     break;
         // }
         //直接定义一个data数据themeTopYs数组形式，根据index获取对应的数组中的数据，进而直接scrollTo（0，themeTopYs[index],2000)
-        this.$refs.scrollDetail.scrollTo(0,-this.themeTopYs[index],500)
+        this.$refs.scroll.scrollTo(0,-this.themeTopYs[index],500)
+
+      },
+
+      //监听scroll滚动的位置
+      contentScroll(position){
+        // console.log(position);
+        const positionY=-position.y;
+        // console.log(this.themeTopYs);
+        // console.log(this.positionY);
+        let length=this.themeTopYs.length;
+        for(let i=0;i<length;i++){
+          if(this.currentIndex!==i&&(i<length-1&&positionY>this.themeTopYs[i]&&positionY<this.themeTopYs[i+1])||(i==length-1&&positionY>this.themeTopYs[i])){
+            // console.log(i);
+            this.currentIndex=i;
+            this.$refs.nav.currentIndex=this.currentIndex;
+          }
+        }
+
+      //回到顶部
+        this.isShowBackTop=positionY>300?true:false;
 
       }
 
     },
     mounted() {
       // console.log('不是混入中的mounted事件');
-      const refresh=debounce( this.$refs.scrollDetail.refresh,200);
+      const refresh=debounce( this.$refs.scroll.refresh,200);
 
       this.$bus.$on('DetailItemImageLoad', () => {
         // console.log('DetailItemImageLoad');
-        // this.$refs.scrollDetail.refresh();
+        // this.$refs.scroll.refresh();
         refresh();
 
       });
@@ -183,7 +210,7 @@
 
     },
     //混入测试，
-    mixins:[testMixin],
+    mixins:[testMixin,backTopMixin],
     //6.每次数据更新的事件，执行多次
     // updated() {
     //   //不太准确
