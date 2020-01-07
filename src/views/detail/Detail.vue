@@ -19,7 +19,7 @@
 
     </scroll>
 <!--    底部加入购物车-->
-    <detail-bottom-bar></detail-bottom-bar>
+    <detail-bottom-bar @addToCart="addCart"></detail-bottom-bar>
 <!--    回到顶部-->
     <back-top @click.native="backTopClick" v-show="isShowBackTop"/>
 
@@ -192,6 +192,20 @@
       //回到顶部
         this.isShowBackTop=positionY>300?true:false;
 
+      },
+
+      //加入购物车
+      addCart(){
+        const obj = {}
+        // 2.对象信息
+        obj.iid = this.iid;
+        obj.imgURL = this.topImages[0]
+        obj.title = this.goods.title
+        obj.desc = this.goods.desc;
+        obj.newPrice = this.goods.newPrice;
+        // this.$store.commit('addCart',obj);
+        this.$store.dispatch('addCart',obj)
+        console.log(this.$store.state.cartList);
       }
 
     },
