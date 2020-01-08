@@ -5,15 +5,15 @@
       <img slot="item_icon_active" src="@/assets/img/tabBar/homeA.png" alt="">
       <div slot="item_title">首页</div>
     </tab-bar-item>
-    <tab-bar-item path="/cart" activeColor="yellow">
+    <tab-bar-item path="/category" activeColor="yellow">
       <img slot="item_icon" src="@/assets/img/tabBar/friends.png" alt="">
       <img slot="item_icon_active" src="@/assets/img/tabBar/friendsA.png" alt="">
-      <div slot="item_title">人脉</div>
+      <div slot="item_title">分类</div>
     </tab-bar-item>
-    <tab-bar-item path="/category" activeColor="red">
+    <tab-bar-item path="/cart" activeColor="red">
       <img slot="item_icon" src="@/assets/img/tabBar/message.png" alt="">
       <img slot="item_icon_active" src="@/assets/img/tabBar/messageA.png" alt="">
-      <div slot="item_title">消息</div>
+      <div slot="item_title">购物车</div>
     </tab-bar-item>
     <tab-bar-item path="/profile" activeColor="green">
       <img slot="item_icon" src="@/assets/img/tabBar/mine.png" alt="">

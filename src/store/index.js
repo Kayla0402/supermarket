@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import mutations from './mutations'
 import actions from './actions'
+import getters from './getters'
 
 Vue.use(Vuex);
 
@@ -10,6 +11,7 @@ const store=new Vuex.Store({
   state,
   mutations,
   actions,
+  getters,
   //mutations中的方法是单一的一个功能的展示，而且只是同步的方法
   // mutations:{
   //   // addCart(state,payLoad){   //addCart方法中包含了两个功能，一个，是相同产品的数量++；另一个是，新产品的增加

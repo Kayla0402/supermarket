@@ -13,6 +13,7 @@ export default {
       // context.commit('addCounter',oldProduct)
       context.commit(ADD_COUNTER,oldProduct)
     }else {
+      payLoad.checked=true;
       payLoad.count=1;
       // context.commit('addToCar',payLoad)
       context.commit(ADD_TO_CART,payLoad)

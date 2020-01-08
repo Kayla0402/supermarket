@@ -196,13 +196,14 @@
 
       //加入购物车
       addCart(){
+        // console.log(this.goods);
         const obj = {}
         // 2.对象信息
         obj.iid = this.iid;
         obj.imgURL = this.topImages[0]
         obj.title = this.goods.title
         obj.desc = this.goods.desc;
-        obj.newPrice = this.goods.newPrice;
+        obj.newPrice = this.goods.realPrice;
         // this.$store.commit('addCart',obj);
         this.$store.dispatch('addCart',obj)
         console.log(this.$store.state.cartList);
