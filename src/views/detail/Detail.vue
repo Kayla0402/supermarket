@@ -43,6 +43,8 @@
   import DetailCommentInfo from './childComps/DetailCommentInfo'
   import DetailBottomBar from './childComps/DetailBottomBar'
 
+  import {mapActions} from 'vuex'
+
   export default {
     name: 'Detail',
     components: {
@@ -131,6 +133,8 @@
 
     },
     methods: {
+      //将actions.js方法映射成自己的方法，就可以不用dispatch方法转调了
+      ...mapActions(['addCart']),
 //图片加载完成的事件
       goodsDetailInfoLoad() {
         // const refresh=debounce( this.$refs.scroll.refresh,200)
@@ -205,8 +209,20 @@
         obj.desc = this.goods.desc;
         obj.newPrice = this.goods.realPrice;
         // this.$store.commit('addCart',obj);
-        this.$store.dispatch('addCart',obj)
-        console.log(this.$store.state.cartList);
+        /*
+        * dispatch是从store中的actions.js文件中引用方法，而this.addCart(obj)方法是调用自己的方法
+        * 将actions.js映射成局部计算属性和getters方法一样
+        * */
+        this.$store.dispatch('addCart',obj).then(res=>{
+          console.log(res);
+          // console.log(this.$toast);
+          this.$toast.show(res)
+        })
+        // this.addCart(obj).then(res=>{
+        //   console.log(res);
+        // })
+
+        // console.log(this.$store.state.cartList);
       }
 
     },

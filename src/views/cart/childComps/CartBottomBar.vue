@@ -1,14 +1,16 @@
 <template>
     <div class="bottom-menu">
-      <CheckButton class="select-all"></CheckButton>
+      <CheckButton class="select-all" :isChecked="isSelectAll" @click.native="checkClick"></CheckButton>
       <span>全选</span>
       <span class="total-price">合计: ¥{{totalPrice}}</span>
-      <span class="buy-product">去计算()</span>
+      <span class="buy-product" @click="calcClick">去计算({{checkLength}})</span>
     </div>
 </template>
 
 <script>
   import CheckButton from '@/components/common/checkButton/CheckButton'
+  //this.$store.getters.cartList有点长，可以专门引入getters中的函数为局部计算属性,就可以直接使用this.cartList属性名
+  import {mapGetters} from 'vuex'
     export default {
       name: "CartBottomBar",
       components: {
@@ -20,27 +22,48 @@
         }
       },
       computed:{
+        ...mapGetters(['cartList']),
         totalPrice(){
-          return this.$store.getters.cartList.filter(item=>{
-            return item.checked=true;
-          })
-          //   .reduce((preValue,item)=>{
-          //   return preValue+item.price*item.count
-          // })
+          // const cartList=this.$store.getters.cartList;
+          return this.cartList.filter(item=>{
+            return item.checked
+          }).reduce((preValue,item)=>{
+            return preValue+item.newPrice*item.count
+          },0).toFixed(2)
         },
-        // price(){
-        //   console.log(this.totalPrice);
-        //   for(let item of this.totalPrice){
-        //     console.log(item.newPrice*item.count);
-        //     this.priceNew+=(item.newPrice*item.count)
-        //     console.log(this.priceNew);
-        //   }
-        // }
-
+        checkLength(){
+          return this.cartList.filter(item=>item.checked).length
+        },
+        isSelectAll(){
+          //方法1  filter
+          if(this.cartList.length==0) return false;
+          // return !(this.cartList.filter(item=>!item.checked).length)
+          //方法2  find，性能高点
+          // return (!this.cartList.find(item=>!item.checked))
+          //普通js遍历
+          for(let item of this.cartList){
+            if(!item.checked){
+              return false
+            }
+          }
+          return true
+        },
 
       },
       methods:{
-
+        checkClick(){
+          console.log(222);
+          if(this.isSelectAll){
+            this.cartList.forEach(item=>item.checked=false)
+          }else {
+            this.cartList.forEach(item=>item.checked=true)
+          }
+        },
+        calcClick(){
+          if(!this.isSelectAll){
+            this.$toast.show('请选择您要购买的商品')
+          }
+        }
       }
     }
 </script>
